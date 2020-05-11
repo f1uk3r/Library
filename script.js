@@ -15,8 +15,9 @@ function addBookToLibrary() {
 
     let aBook = new Book(title, author, pages, read)
     myLibrary.push(aBook)
-    console.log(myLibrary)
-    insertRowInTable(aBook)
+    let tableBody = document.querySelector('tBody');
+    tableBody.innerHTML = ''
+    render()
 }
 
 const form = document.querySelector('form')
@@ -25,30 +26,47 @@ form.addEventListener('submit', event => {
     addBookToLibrary();
 })
 
-function insertRowInTable(bookObject) {
-    let tableBody = document.querySelector('tBody')
-    let tr = document.createElement('tr')
-    let titleTd = document.createElement('td')
-    let titleText = document.createTextNode(bookObject.name);
-    titleTd.appendChild(titleText)
-    tr.appendChild(titleTd)
-    let authorTd = document.createElement('td')
-    let authorText = document.createTextNode(bookObject.author);
-    authorTd.appendChild(authorText)
-    tr.appendChild(authorTd)
-    let pagesTd = document.createElement('td')
-    let pagesText = document.createTextNode(bookObject.pages);
-    pagesTd.appendChild(pagesText)
-    tr.appendChild(pagesTd)
-    let readTd = document.createElement('td')
-    let readText = document.createTextNode(bookObject.read);
-    readTd.appendChild(readText)
-    tr.appendChild(readTd)
-    let deleteTd = document.createElement('td')
-    let deleteButton = document.createElement('button')
-    let deleteText = document.createTextNode('Delete');
-    deleteButton.appendChild(deleteText)
-    deleteTd.appendChild(deleteButton)
-    tr.appendChild(deleteTd);
-    tableBody.appendChild(tr);
+function render() {
+    let tableBody = document.querySelector('tBody');
+    for (let i = 0; i<myLibrary.length; i++) {
+        let row = document.createElement('tr');
+
+        let titleTd = document.createElement('td');
+        let titleText = document.createTextNode(myLibrary[i].name);
+        titleTd.appendChild(titleText);
+        row.appendChild(titleTd);
+
+        let authorTd = document.createElement('td');
+        let authorText = document.createTextNode(myLibrary[i].author);
+        authorTd.appendChild(authorText);
+        row.appendChild(authorTd);
+
+        let pagesTd = document.createElement('td');
+        let pagesText = document.createTextNode(myLibrary[i].pages);
+        pagesTd.appendChild(pagesText);
+        row.appendChild(pagesTd);
+
+        let readTd = document.createElement('td');
+        let readInput = document.createElement('INPUT');
+        readInput.setAttribute('type', 'checkbox');
+        readInput.checked = myLibrary[i].read;
+        readTd.appendChild(readInput);
+        row.appendChild(readTd);
+
+        let deleteTd = document.createElement('td');
+        let deleteButton = document.createElement('button');
+        deleteButton.className = "delete";
+        let deleteText = document.createTextNode('Delete');
+        deleteButton.appendChild(deleteText);
+        deleteTd.appendChild(deleteButton);
+        row.appendChild(deleteTd);
+        deleteButton.addEventListener('click', deleteRow(i));
+
+        tableBody.appendChild(row);
+    }
+        
+}
+
+function deleteRow(index) {
+    myLibrary.splice(index, 1);
 }
